@@ -62,6 +62,14 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
+        """Get the absolute URL for the category.
+        
+        Args:
+            self: Category instance
+        
+        Returns:
+            str: The absolute URL for the category list view, including the category slug.
+        """
         return reverse("shop:category-list", args=[str(self.slug)])
 
 
@@ -92,6 +100,23 @@ class Product(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
+        """
+        Return a string representation of the object.
+        
+        """Get the absolute URL for the product detail page.
+        
+        Args:
+            self: Product instance
+        
+        Returns:
+            str: The absolute URL for the product detail page
+        """
+        Args:
+            self: The instance of the class.
+        
+        Returns:
+            str: The title of the object.
+        """
         return self.title
 
     def get_absolute_url(self):
