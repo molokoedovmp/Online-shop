@@ -8,6 +8,18 @@ from .models import Product, Category, ProductProxy
 class ProductViewTest(TestCase):
     def test_get_products(self):
     
+        """
+        Test the retrieval of products from the shop.
+        
+        This method creates a test environment with sample products and categories,
+        then verifies the correct functioning of the product listing view.
+        
+        Args:
+            self: The test case instance.
+        
+        Returns:
+            None: This method doesn't return anything but performs assertions.
+        """
         small_gif = (
         b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
         b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
@@ -20,6 +32,20 @@ class ProductViewTest(TestCase):
         product_1 = Product.objects.create(title='Product 1', category=category, image=uploaded, slug='product-1')
         product_2 = Product.objects.create(title='Product 2', category=category, image=uploaded, slug='product-2')
 
+        """
+        Test the retrieval of a product by its slug.
+        
+        This method creates a product with a small GIF image, assigns it to a category,
+        and then makes a GET request to the product detail view using the product's slug.
+        It verifies that the response is successful and that the correct product is
+        returned in the response context.
+        
+        Args:
+            self: The test case instance.
+        
+        Returns:
+            None: This method doesn't return anything but performs assertions.
+        """
         response = self.client.get(reverse('shop:products'))
 
         self.assertEqual(response.status_code, 200)
@@ -56,6 +82,14 @@ class ProductDetailViewTest(TestCase):
 
 class CategoryListViewTest(TestCase):
     def setUp(self):
+        """Sets up the test environment with sample data.
+        
+        Args:
+            self: The test case instance.
+        
+        Returns:
+            None: This method doesn't return anything, but it sets up instance attributes.
+        """
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
             b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
@@ -69,12 +103,36 @@ class CategoryListViewTest(TestCase):
             title='Test Product', slug='test-product', category=self.category, image=uploaded)
 
     def test_status_code(self):
+        """Tests the HTTP status code for the category list view.
+        
+        Args:
+            self: TestCase: The test case instance.
+        
+        Returns:
+            None: This method doesn't return anything, but asserts that the response status code is 200.
+        """
         response = self.client.get(
             reverse('shop:category-list', args=[self.category.slug]))
+        """Test the context data of the category list view.
+        
+        Args:
+            self: TestCase: The test case instance.
+        
+        Returns:
+            None: This method doesn't return anything, it performs assertions.
+        """
         self.assertEqual(response.status_code, 200)
 
     def test_template_used(self):
-        response = self.client.get(
+        """
+        Test if the correct template is used for the category list view.
+        
+        Args:
+            self: TestCase instance
+        
+        Returns:
+            None: This method doesn't return anything, it performs assertions
+        """        response = self.client.get(
             reverse('shop:category-list', args=[self.category.slug]))
         self.assertTemplateUsed(response, 'shop/category_list.html')
 
