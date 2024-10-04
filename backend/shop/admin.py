@@ -9,7 +9,15 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
     def get_prepopulated_fields(self, request, obj=None):
-        return {
+        """Get the prepopulated fields for the admin form.
+        
+        Args:
+            request (HttpRequest): The current request object.
+            obj (Model, optional): The object being edited, or None if creating a new object.
+        
+        Returns:
+            dict: A dictionary mapping field names to sequences of field names to use for prepopulation.
+        """        return {
             'slug': ('name',),
         }
 
@@ -22,6 +30,15 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ('title',)
 
     def get_prepopulated_fields(self, request, obj=None):
-        return {
+        """Get prepopulated fields for the admin form.
+        
+        Args:
+            self: The instance of the admin class.
+            request (HttpRequest): The current request object.
+            obj (Model, optional): The object being edited, or None if creating a new object.
+        
+        Returns:
+            dict: A dictionary mapping field names to sequences of field names to use for prepopulation.
+        """        return {
             'slug': ('title',),
         }
