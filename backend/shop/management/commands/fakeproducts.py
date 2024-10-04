@@ -9,6 +9,17 @@ fake = Faker()
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        """
+        Generates and saves 30 fake products to the database.
+        
+        Args:
+            self: The instance of the command class.
+            *args: Variable length argument list.
+            **options: Arbitrary keyword arguments.
+        
+        Returns:
+            None: This method doesn't return anything, but prints the total number of products in the database.
+        """
         fake = Faker()
         # Create 100 fake products
         for _ in range(30):

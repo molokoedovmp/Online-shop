@@ -11,6 +11,16 @@ from .models import Order, OrderItem, ShippingAddress
 
 
 def export_paid_to_csv(modeladmin, request, queryset):
+    """Exports paid queryset objects to a CSV file.
+    
+    Args:
+        modeladmin (admin.ModelAdmin): The ModelAdmin instance.
+        request (HttpRequest): The current request object.
+        queryset (QuerySet): The queryset of objects to be exported.
+    
+    Returns:
+        HttpResponse: A response object with the CSV file content.
+    """
     opts = modeladmin.model._meta
     content_disposition = f"attachment; filename=Paid{opts.verbose_name}.csv"
     response = HttpResponse(content_type="text/csv")
@@ -38,6 +48,17 @@ def export_paid_to_csv(modeladmin, request, queryset):
 export_paid_to_csv.short_description = "Export Paid to CSV"
 
 def export_not_paid_to_csv(modeladmin, request, queryset):
+    """
+    Exports unpaid objects from a queryset to a CSV file.
+    
+    Args:
+        modeladmin (admin.ModelAdmin): The ModelAdmin instance.
+        request (HttpRequest): The current request.
+        queryset (QuerySet): The queryset of objects to be exported.
+    
+    Returns:
+        HttpResponse: A response containing the CSV file for download.
+    """
     opts = modeladmin.model._meta
     content_disposition = f"attachment; filename=NotPaid{opts.verbose_name}.csv"
     response = HttpResponse(content_type="text/csv")
@@ -65,6 +86,14 @@ def export_not_paid_to_csv(modeladmin, request, queryset):
 export_not_paid_to_csv.short_description = "Export Not Paid to CSV"
 
 def order_pdf(obj):
+    """Generate a PDF link for an order.
+    
+    Args:
+        obj (Order): The order object for which to generate the PDF link.
+    
+    Returns:
+        str: A safe HTML string containing an anchor tag with a link to the order's PDF.
+    """
     url = reverse('payment:admin_order_pdf', args=[obj.id])
     return mark_safe(f'<a href="{url}">PDF</a>')
 
@@ -78,6 +107,24 @@ class ShippingAdressAdmin(admin.ModelAdmin):
 
     @admin.display(description="Full Name", empty_value="Noname")
     def full_name_bold(self, obj):
+        """
+        Formats the full name of an object in bold HTML.
+        
+        Args:
+            obj (object): The object containing a 'full_name' attribute.
+        
+        Returns:
+            """Get the list of read-only fields for the admin form.
+            
+            Args:
+                request (HttpRequest): The current request object.
+                obj (Model, optional): The object being edited. Defaults to None.
+            
+            Returns:
+                list: A list of field names that should be read-only in the admin form.
+            """
+            SafeString: An HTML-safe string with the full name wrapped in bold tags.
+        """
         return format_html("<b style='font-weight: bold;'>{}</b>", obj.full_name)
     
 class OrderItemInline(admin.TabularInline):

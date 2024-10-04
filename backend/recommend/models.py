@@ -23,4 +23,11 @@ class Review(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.created_by} on Product: {self.product}"
+        """Returns a string representation of the object.
+        
+        Args:
+            self: The instance of the class.
+        
+        Returns:
+            str: A string containing the 'created_by' attribute and the 'product' attribute.
+        """        return f"{self.created_by} on Product: {self.product}"

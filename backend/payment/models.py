@@ -27,9 +27,33 @@ class ShippingAddress(models.Model):
         ordering = ['-id']
 
     def __str__(self):
+        """
+        Returns a string representation of the shipping address.
+        
+        Args:
+            self: The instance of the class containing this method.
+        
+        Returns:
+            str: A string containing "Shipping Address" followed by a hyphen and the full name.
+        """
         return "Shipping Address" + " - " + self.full_name
 
     def get_absolute_url(self):
+        """Returns the absolute URL for the shipping payment page.
+        
+        Args:
+            self: The instance of the class containing this method.
+"""Creates a default shipping address for a user.
+
+Args:
+    user (User): The user object for whom the default shipping address is being created.
+
+Returns:
+    ShippingAddress: A new ShippingAddress object with default values.
+"""        
+        Returns:
+            str: A string representing the absolute URL path for the shipping payment page.
+        """
         return f"/payment/shipping"
 
     @classmethod
@@ -66,12 +90,46 @@ class Order(models.Model):
         ]
 
     def __str__(self):
+        """Return a string representation of the Order object.
+        
+        Args:
+            self: The Order instance.
+        
+        Returns:
+            str: A string in the format "Order<id>" where <id> is the order's unique identifier.
+        """
         return "Order" + str(self.id)
 
     def get_absolute_url(self):
+        """
+        Get the absolute URL for the order detail page.
+        
+        Args:
+            self: Order instance
+        
+        Returns:
+            str: The absolute URL for the order detail page
+        """
         return reverse("payment:order_detail", kwargs={"pk": self.pk})
 
     def get_total_cost_before_discount(self):
+        """Calculate the total cost of all items before applying any discount.
+        
+        Args:
+            self: The instance of the class containing this method.
+"""
+Calculates the discount amount based on the total cost and discount percentage.
+
+Args:
+    self: The instance of the class containing this method.
+
+Returns:
+    Decimal: The calculated discount amount. Returns 0 if there's no total cost or no discount set.
+"""
+        
+        Returns:
+            float: The sum of the costs of all items in the order.
+        """
         return sum(item.get_cost() for item in self.items.all())
 
     @property
@@ -81,13 +139,31 @@ class Order(models.Model):
         return Decimal(0)
 
     def get_total_cost(self):
-        total_cost = self.get_total_cost_before_discount()
+        ```
+        """Calculate the total cost after applying the discount.
+        
+        Args:
+            self: The instance of the class containing this method.
+        
+        Returns:
+            float: The final total cost after subtracting the discount from the initial total cost.
+        """
+        ```        total_cost = self.get_total_cost_before_discount()
         return total_cost - self.get_discount
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, blank=True, null=True, related_name='items')
+    """
+    Returns a string representation of the OrderItem object.
+    
+    Args:
+        self: The instance of the OrderItem class.
+    
+    Returns:
+        str: A string in the format "OrderItem<id>" where <id> is the OrderItem's id.
+    """
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
@@ -108,16 +184,50 @@ class OrderItem(models.Model):
         return "OrderItem" + str(self.id)
 
     def get_cost(self):
+        """Calculate the total cost of the item.
+        
+        Args:
+            self: The instance of the class containing price and quantity attributes.
+        
+        Returns:
+            float: The total cost, calculated by multiplying price and quantity.
+        """
         return self.price * self.quantity
 
     @property
     def total_cost(self):
+        """Calculate the total cost of the item.
+        
+        Args:
+            self: The instance of the class containing price and quantity attributes.
+        
+        Returns:
+            float: The total cost, calculated by multiplying price and quantity.
+        """
         return self.price * self.quantity
 
     @classmethod
     def get_total_quantity_for_product(cls, product):
-        return cls.objects.filter(product=product).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
+        """
+        Get the total quantity for a specific product.
+        
+        Args:
+            product (Product): The product object for which to calculate the total quantity.
+        
+        Returns:
+            int: The total quantity of the product across all records, or 0 if no records are found.
+        """        return cls.objects.filter(product=product).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
 
     @staticmethod
     def get_average_price():
-        return OrderItem.objects.aggregate(average_price=models.Avg('price'))['average_price']
+        ```
+        """Calculates the average price of all order items.
+        
+        Args:
+            None
+        
+        Returns:
+            float: The average price of all order items in the database.
+        """
+        
+        ```        return OrderItem.objects.aggregate(average_price=models.Avg('price'))['average_price']

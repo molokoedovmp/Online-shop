@@ -8,6 +8,14 @@ from .models import Order, ShippingAddress
 @shared_task()
 def send_order_confirmation(order_id):
     
+    """Sends an order confirmation email to the customer.
+    
+    Args:
+        order_id (int): The unique identifier of the order.
+    
+    Returns:
+        bool: True if the email was sent successfully, False otherwise.
+    """
     order = Order.objects.get(id=order_id)
     subject = f'Order {order.id} payment Confirmation'
     receipent_data = ShippingAddress.objects.get(user=order.user)

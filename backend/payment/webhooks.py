@@ -13,6 +13,15 @@ from .tasks import send_order_confirmation
 
 @csrf_exempt
 def stripe_webhook(request):
+    """Handles Stripe webhook events for payment processing.
+    
+    Args:
+        request (HttpRequest): The incoming HTTP request containing Stripe webhook data.
+    
+    Returns:
+        HttpResponse: A response with status code 200 if the event is processed successfully,
+                      400 if the payload or signature is invalid, or 404 if the order is not found.
+    """
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
@@ -47,6 +56,23 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 def get_client_ip(request):
+    """Retrieve the client's IP address from the HTTP request.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing client information.
+    
+    Returns:
+        str: The client's IP address as a string.
+    """
+    """Handles YooKassa webhook requests for payment processing.
+    
+    Args:
+        request (HttpRequest): The incoming HTTP request containing webhook data.
+    
+    Returns:
+        HttpResponse: A response with status code 200 if the webhook is processed successfully,
+                      or status code 400 if there's an error or the IP is not trusted.
+    """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]

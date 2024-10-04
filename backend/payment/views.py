@@ -27,6 +27,14 @@ Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
 @login_required(login_url='account:login')
 def shipping(request):
+    """Handles the shipping address form submission and display.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing user and form data.
+    
+    Returns:
+        HttpResponse: Renders the shipping form page or redirects to the dashboard on successful form submission.
+    """
     try:
         shipping_address = ShippingAddress.objects.get(user=request.user)
     except ShippingAddress.DoesNotExist:
@@ -45,7 +53,15 @@ def shipping(request):
 
 
 def checkout(request):
-    if request.user.is_authenticated:
+    """Process the checkout for an authenticated or unauthenticated user.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing user information.
+    
+    Returns:
+        HttpResponse: Rendered checkout page with shipping address for authenticated users,
+                      or without shipping address for unauthenticated users.
+    """    if request.user.is_authenticated:
         shipping_address, _ = ShippingAddress.objects.get_or_create(
             user=request.user)
         return render(request, 'payment/checkout.html', {'shipping_address': shipping_address})
@@ -53,6 +69,14 @@ def checkout(request):
 
 
 def complete_order(request):
+    """Completes an order by processing payment and creating order records.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing POST data.
+    
+    Returns:
+        HttpResponseRedirect: Redirects to the payment gateway URL for completing the transaction.
+    """
     if request.method == 'POST':
         payment_type = request.POST.get('stripe-payment', 'yookassa-payment')
 
@@ -172,6 +196,14 @@ def complete_order(request):
                             order=order, product=item['product'], price=item['price'], quantity=item['qty'])
 
 def payment_success(request):
+    """Handles successful payment and renders the payment success page.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing session data.
+    
+    Returns:
+        HttpResponse: Rendered payment success page.
+    """
     for key in list(request.session.keys()):
         if key == 'session_key':
             del request.session[key]
@@ -179,10 +211,27 @@ def payment_success(request):
 
 
 def payment_failed(request):
+    """Render the payment failed page.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+    
+    Returns:
+        HttpResponse: A rendered HTML page for payment failure.
+    """
     return render(request, 'payment/payment-failed.html')
 
 @staff_member_required
 def admin_order_pdf(request, order_id):
+    """Generates a PDF invoice for an admin order.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        order_id (int): The ID of the order to generate the PDF for.
+    
+    Returns:
+        HttpResponse: A response containing the generated PDF file.
+    """
     try:
         order = Order.objects.select_related('user', 'shipping_address').get(id=order_id)
     except Order.DoesNotExist:

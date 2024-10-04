@@ -17,6 +17,14 @@ def cart_view(request):
 
 
 def cart_add(request):
+    """Add a product to the shopping cart.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing POST data.
+    
+    Returns:
+        JsonResponse: A JSON response containing the updated cart quantity and added product title.
+    """
     cart = Cart(request)
 
     if request.POST.get('action') == 'post':
@@ -35,6 +43,14 @@ def cart_add(request):
         return response
 
 def cart_delete(request):
+    """Handles the deletion of a product from the shopping cart.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing POST data.
+    
+    Returns:
+        JsonResponse: A JSON response containing updated cart quantity and total price.
+    """
     cart = Cart(request)
 
     if request.POST.get('action') == 'post':
@@ -51,6 +67,14 @@ def cart_delete(request):
         return response
 
 def cart_update(request):
+    """Updates the shopping cart based on the provided request.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing POST data.
+    
+    Returns:
+        JsonResponse: A JSON response containing updated cart quantity and total price.
+    """
     cart = Cart(request)
 
     if request.POST.get('action') == 'post':
