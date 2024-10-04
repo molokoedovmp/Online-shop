@@ -14,12 +14,30 @@ class ProductListView(ListView):
     paginate_by = 15
 
     def get_template_names(self):
-        if self.request.htmx:
+        """Determines the appropriate template name based on the request type.
+        
+        Args:
+            self: The instance of the class containing this method.
+        
+        Returns:
+            str: The name of the template to be used for rendering the response.
+                Returns "shop/components/product_list.html" if the request is an HTMX request,
+                otherwise returns "shop/products.html".
+        """        if self.request.htmx:
             return "shop/components/product_list.html"
         return "shop/products.html"
 
 
 def products_detail_view(request, slug):
+    """Handles the product detail view and review submission.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        slug (str): The unique slug identifier for the product.
+    
+    Returns:
+        HttpResponse: Rendered product detail page or redirect response.
+    """
     product = get_object_or_404(
         ProductProxy.objects.select_related('category'), slug=slug)
 
@@ -43,7 +61,22 @@ def products_detail_view(request, slug):
     return render(request, 'shop/product_detail.html', context)
 
 def category_list(request, slug):
-    category = get_object_or_404(Category, slug=slug)
+    """Renders a list of products for a specific category.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        slug (str): The slug identifier for the category.
+    
+    """Search for products based on a query string.
+    
+    Args:
+        request (HttpRequest): The HTTP request object containing the search query.
+    
+    Returns:
+        HttpResponse: Rendered HTML page with search results or a redirect to the products page.
+    """    Returns:
+        HttpResponse: Rendered HTML page displaying the category and its products.
+    """    category = get_object_or_404(Category, slug=slug)
     products = ProductProxy.objects.select_related('category').filter(category=category)
     context = {'category': category, 'products': products}
     return render(request, 'shop/category_list.html', context)
